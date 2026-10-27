@@ -4,6 +4,8 @@ Last updated: October 27, 2026
 
 One TypeScript codebase builds the buyer app for Android, iOS and the web, with a separate seller website and one backend hosted in India.
 
+**Development environment.** While the app is being built, it runs in AWS US East (us-east-1) and accepts both Indian and US mobile numbers. Production moves to Mumbai and accepts Indian numbers only.
+
 ## At a glance
 
 ```
