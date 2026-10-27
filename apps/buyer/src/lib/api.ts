@@ -1,4 +1,5 @@
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3000";
+// "/" means the API is served from the same origin as the web app (as on AWS).
+const API_URL = (process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
 export class ApiError extends Error {
   constructor(

@@ -1,0 +1,52 @@
+name: Deploy development (AWS US East)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time; a newer push waits for the running one.
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: false
+
+permissions:
+  id-token: write # lets the job sign in to AWS with GitHub's OIDC token
+  contents: read
+
+jobs:
+  deploy:
+    # Skipped until the AWS role is set up (see infra/README.md).
+    if: vars.AWS_DEPLOY_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build the buyer web app
+        run: pnpm --filter @quantify/buyer build:web
+        env:
+          # The web app calls the API on its own CloudFront domain.
+          EXPO_PUBLIC_API_URL: /
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Deploy
+        working-directory: infra
+        run: pnpm exec cdk deploy QuantifyDev --require-approval never --context smsProvider=${{ vars.SMS_PROVIDER || 'console' }} --outputs-file cdk-outputs.json
+
+      - name: Show the app URL
+        working-directory: infra
+        run: |
+          url=$(node -p "require('./cdk-outputs.json').QuantifyDev.AppUrl")
+          echo "Deployed to $url"
+          echo "### Development app: $url" >> "$GITHUB_STEP_SUMMARY"

@@ -2,7 +2,9 @@ import { parsePhoneCountries, type PhoneCountry } from "@quantify/shared";
 import { z } from "zod";
 
 const schema = z.object({
-  DATABASE_URL: z.string().min(1),
+  // Optional: without it, node-postgres reads PGHOST, PGUSER, PGPASSWORD,
+  // PGDATABASE, PGPORT and PGSSLMODE, which is how the AWS deployment connects.
+  DATABASE_URL: z.string().min(1).optional(),
   PORT: z.coerce.number().int().positive().default(3000),
   JWT_SECRET: z.string().min(16),
   OTP_SECRET: z.string().min(16),
@@ -13,7 +15,7 @@ const schema = z.object({
 });
 
 export type Config = {
-  databaseUrl: string;
+  databaseUrl: string | undefined;
   port: number;
   jwtSecret: string;
   otpSecret: string;

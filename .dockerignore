@@ -1,0 +1,8 @@
+**/node_modules
+**/dist
+**/.env
+**/cdk.out
+.git
+apps
+infra
+docs

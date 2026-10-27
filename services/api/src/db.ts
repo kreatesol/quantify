@@ -5,7 +5,7 @@ import pg from "pg";
 
 export type Db = pg.Pool;
 
-export function createDb(databaseUrl: string): Db {
+export function createDb(databaseUrl: string | undefined): Db {
   return new pg.Pool({ connectionString: databaseUrl });
 }
 
