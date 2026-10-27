@@ -12,6 +12,7 @@ Quantify turns everyday receipts into a clear picture of spending, item by item,
 | `apps/buyer` | Buyer app for Android, iOS and the web (Expo, React Native) |
 | `services/api` | Backend API (Node.js, Fastify, PostgreSQL) |
 | `packages/shared` | Code shared by the apps and the API, such as phone number rules |
+| `infra` | AWS setup for the development environment, deployed by GitHub Actions ([setup steps](infra/README.md)) |
 
 ## Development setup
 

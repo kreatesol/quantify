@@ -36,3 +36,8 @@ jobs:
       - run: pnpm test
       - name: Build the buyer web app
         run: pnpm --filter @quantify/buyer build:web
+      - name: Check the AWS infrastructure builds
+        working-directory: infra
+        run: pnpm exec cdk synth --quiet
+        env:
+          CDK_DEFAULT_ACCOUNT: "123456789012"
